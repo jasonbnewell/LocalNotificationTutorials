@@ -8,11 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		7469E4311A7C8E8200C68120 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7469E4301A7C8E8200C68120 /* AppDelegate.swift */; };
-		7469E4331A7C8E8200C68120 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7469E4321A7C8E8200C68120 /* ViewController.swift */; };
 		7469E4361A7C8E8200C68120 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7469E4341A7C8E8200C68120 /* Main.storyboard */; };
 		7469E4381A7C8E8200C68120 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7469E4371A7C8E8200C68120 /* Images.xcassets */; };
 		7469E43B1A7C8E8200C68120 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7469E4391A7C8E8200C68120 /* LaunchScreen.xib */; };
 		7469E4471A7C8E8200C68120 /* LocalNotificationsTutorialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7469E4461A7C8E8200C68120 /* LocalNotificationsTutorialTests.swift */; };
+		7469E4531A7C9D5600C68120 /* TodoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7469E4521A7C9D5600C68120 /* TodoTableViewController.swift */; };
+		7469E4551A7C9D9500C68120 /* TodoSchedulingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7469E4541A7C9D9500C68120 /* TodoSchedulingViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,13 +30,14 @@
 		7469E42B1A7C8E8200C68120 /* LocalNotificationsTutorial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocalNotificationsTutorial.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7469E42F1A7C8E8200C68120 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7469E4301A7C8E8200C68120 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7469E4321A7C8E8200C68120 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7469E4351A7C8E8200C68120 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7469E4371A7C8E8200C68120 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7469E43A1A7C8E8200C68120 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		7469E4401A7C8E8200C68120 /* LocalNotificationsTutorialTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LocalNotificationsTutorialTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7469E4451A7C8E8200C68120 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7469E4461A7C8E8200C68120 /* LocalNotificationsTutorialTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsTutorialTests.swift; sourceTree = "<group>"; };
+		7469E4521A7C9D5600C68120 /* TodoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoTableViewController.swift; sourceTree = "<group>"; };
+		7469E4541A7C9D9500C68120 /* TodoSchedulingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoSchedulingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,7 +80,8 @@
 			isa = PBXGroup;
 			children = (
 				7469E4301A7C8E8200C68120 /* AppDelegate.swift */,
-				7469E4321A7C8E8200C68120 /* ViewController.swift */,
+				7469E4521A7C9D5600C68120 /* TodoTableViewController.swift */,
+				7469E4541A7C9D9500C68120 /* TodoSchedulingViewController.swift */,
 				7469E4341A7C8E8200C68120 /* Main.storyboard */,
 				7469E4371A7C8E8200C68120 /* Images.xcassets */,
 				7469E4391A7C8E8200C68120 /* LaunchScreen.xib */,
@@ -211,7 +214,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7469E4331A7C8E8200C68120 /* ViewController.swift in Sources */,
+				7469E4551A7C9D9500C68120 /* TodoSchedulingViewController.swift in Sources */,
+				7469E4531A7C9D5600C68120 /* TodoTableViewController.swift in Sources */,
 				7469E4311A7C8E8200C68120 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -406,6 +410,7 @@
 				7469E44C1A7C8E8200C68120 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7469E44D1A7C8E8200C68120 /* Build configuration list for PBXNativeTarget "LocalNotificationsTutorialTests" */ = {
 			isa = XCConfigurationList;
@@ -414,6 +419,7 @@
 				7469E44F1A7C8E8200C68120 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
