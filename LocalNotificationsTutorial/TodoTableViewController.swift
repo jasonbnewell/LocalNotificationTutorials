@@ -22,7 +22,7 @@ class TodoTableViewController: UITableViewController {
     }
     
     func refreshList() {
-        todoItems = TodoList().allItems()
+        todoItems = TodoList.sharedInstance.allItems()
         if (todoItems.count >= 64) {
             self.navigationItem.rightBarButtonItem!.enabled = false // disable 'add' button
         }
@@ -64,7 +64,7 @@ class TodoTableViewController: UITableViewController {
             // Delete the row from the data source
             var item = todoItems.removeAtIndex(indexPath.row) // remove TodoItem from notifications array, assign removed item to 'item'
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-            TodoList().removeItem(item) // delete backing property list entry and unschedule local notification (if it still exists)
+            TodoList.sharedInstance.removeItem(item) // delete backing property list entry and unschedule local notification (if it still exists)
             self.navigationItem.rightBarButtonItem!.enabled = true // we definitely have under 64 notifications scheduled now, make sure 'add' button is enabled
         }
     }

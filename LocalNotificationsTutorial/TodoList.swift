@@ -10,28 +10,28 @@ import Foundation
 import UIKit
 
 class TodoList {
-    private let savePath = (NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString).stringByAppendingPathComponent("todo.plist") // ~/todo.plist
+    class var sharedInstance : TodoList {
+        struct Static {
+            static let instance : TodoList = TodoList()
+        }
+        return Static.instance
+    }
+
+    private let ITEMS_KEY = "todoItems"
     
     func allItems() -> [TodoItem] {
-        var items: [AnyObject] = self.rawItems()
-        return items.map({TodoItem(deadline: $0["deadline"] as NSDate, title: $0["title"] as String,  UUID: $0["UUID"] as String!)}).sorted({
+        var todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? [:]
+        let items = Array(todoDictionary.values)
+        return items.map({TodoItem(deadline: $0["deadline"] as NSDate, title: $0["title"] as String, UUID: $0["UUID"] as String!)}).sorted({
             return ($0.deadline.compare($1.deadline) == .OrderedAscending)
         })
     }
-
-    private func rawItems() -> [AnyObject] {
-        var items: Array<AnyObject> = [] // default to an empty array...
-        if (NSArray(contentsOfFile: self.savePath) != nil) { // ...because init?(contentsOfFile:) will return nil if file doesn't exist yet
-            items = NSArray(contentsOfFile: self.savePath)! // load stored items, if available
-        }
-        return items
-    }
     
     func addItem(item: TodoItem) {
-        // persist a representation of this todo item in a plist
-        var items: [AnyObject] = self.rawItems()
-        items.append(["title": item.title, "deadline": item.deadline, "UUID": item.UUID]) // add a dictionary representing this TodoItem instance
-        (items as NSArray).writeToFile(self.savePath, atomically: true) // items casted as NSArray because writeToFile:atomically: is not available on Swift arrays
+        // persist a representation of this todo item in NSUserDefaults
+        var todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? Dictionary() // if todoItems hasn't been set in user defaults, initialize todoDictionary to an empty dictionary using nil-coalescing operator (??)
+        todoDictionary[item.UUID] = ["deadline": item.deadline, "title": item.title, "UUID": item.UUID] // store NSData representation of todo item in dictionary with UUID as key
+        NSUserDefaults.standardUserDefaults().setObject(todoDictionary, forKey: ITEMS_KEY) // save/overwrite todo item list
         
         // create a corresponding local notification
         var notification = UILocalNotification()
@@ -52,8 +52,9 @@ class TodoList {
             }
         }
         
-        var items: [AnyObject] = self.rawItems()
-        items = items.filter {($0["UUID"] as String? != item.UUID)} // remove item that matches UUID
-        (items as NSArray).writeToFile(self.savePath, atomically: true) // overwrite todo.plist with new array
+        if var todoItems = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) {
+            todoItems.removeValueForKey(item.UUID)
+            NSUserDefaults.standardUserDefaults().setObject(todoItems, forKey: ITEMS_KEY) // save/overwrite todo item list
+        }
     }
 }
