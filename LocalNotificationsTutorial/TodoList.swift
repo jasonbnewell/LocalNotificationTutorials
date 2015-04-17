@@ -22,8 +22,8 @@ class TodoList {
     func allItems() -> [TodoItem] {
         var todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? [:]
         let items = Array(todoDictionary.values)
-        return items.map({TodoItem(deadline: $0["deadline"] as NSDate, title: $0["title"] as String, UUID: $0["UUID"] as String!)}).sorted({
-            return ($0.deadline.compare($1.deadline) == .OrderedAscending)
+        return items.map({TodoItem(deadline: $0["deadline"] as! NSDate, title: $0["title"] as! String, UUID: $0["UUID"] as! String!)}).sorted({(left: TodoItem, right:TodoItem) -> Bool in
+            (left.deadline.compare(right.deadline) == .OrderedAscending)
         })
     }
     
@@ -45,8 +45,8 @@ class TodoList {
     }
     
     func removeItem(item: TodoItem) {
-        for notification in UIApplication.sharedApplication().scheduledLocalNotifications as [UILocalNotification] { // loop through notifications...
-            if (notification.userInfo!["UUID"] as String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+        for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
+            if (notification.userInfo!["UUID"] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
                 UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
                 break
             }
