@@ -33,12 +33,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         todoCategory.setActions([remindAction, completeAction], forContext: .Default) // UIUserNotificationActionContext.Default (4 actions max)
         todoCategory.setActions([completeAction, remindAction], forContext: .Minimal) // UIUserNotificationActionContext.Minimal - for when space is limited (2 actions max)
         
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: NSSet(array: [todoCategory]))) // we're now providing a set containing our category as an argument
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: NSSet(array: [todoCategory]) as Set<NSObject>)) // we're now providing a set containing our category as an argument
         return true
     }
     
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        var item = TodoItem(deadline: notification.fireDate!, title: notification.userInfo!["title"] as String, UUID: notification.userInfo!["UUID"] as String!)
+        var item = TodoItem(deadline: notification.fireDate!, title: notification.userInfo!["title"] as! String, UUID: notification.userInfo!["UUID"] as! String!)
         switch (identifier!) {
         case "COMPLETE_TODO":
             TodoList.sharedInstance.removeItem(item)

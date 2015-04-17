@@ -38,7 +38,7 @@ class TodoTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("todoCell", forIndexPath: indexPath) as UITableViewCell // retrieve the prototype cell (subtitle style)
+        let cell = tableView.dequeueReusableCellWithIdentifier("todoCell", forIndexPath: indexPath) as! UITableViewCell // retrieve the prototype cell (subtitle style)
         let todoItem = todoItems[indexPath.row] as TodoItem
         
         cell.textLabel?.text = todoItem.title as String!
