@@ -20,8 +20,8 @@ class TodoSchedulingViewController: UIViewController {
             self.presentViewController(alertController, animated: true, completion: nil)
             return
         }
-            let todoItem = TodoItem(deadline: deadlinePicker.date, title: text, UUID: NSUUID().UUIDString)
-            TodoList().addItem(todoItem) // schedule a local notification to persist this item
-            self.navigationController?.popToRootViewControllerAnimated(true) // return to list view where the newly created item will be displayed
+        let todoItem = TodoItem(deadline: deadlinePicker.date, title: text, UUID: NSUUID().UUIDString)
+        TodoList().addItem(todoItem) // schedule a local notification to persist this item
+        self.navigationController?.popToRootViewControllerAnimated(true) // return to list view where the newly created item will be displayed
     }
 }
