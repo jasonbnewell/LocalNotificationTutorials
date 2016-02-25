@@ -59,14 +59,14 @@ class TodoTableViewController: UITableViewController {
         return true // all cells are editable
     }
     
-    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
         return "Complete" // alternate text for delete button
     }
 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete { // the only editing style we'll support
             // Delete the row from the data source
-            var item = todoItems.removeAtIndex(indexPath.row) // remove TodoItem from notifications array, assign removed item to 'item'
+            let item = todoItems.removeAtIndex(indexPath.row) // remove TodoItem from notifications array, assign removed item to 'item'
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
             TodoList().removeItem(item) // delete backing property list entry and unschedule local notification (if it still exists)
             self.navigationItem.rightBarButtonItem!.enabled = true // we definitely have under 64 notifications scheduled now, make sure 'add' button is enabled
