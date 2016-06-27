@@ -20,9 +20,9 @@ class TodoList {
     private let ITEMS_KEY = "todoItems"
     
     func allItems() -> [TodoItem] {
-        var todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? [:]
+        let todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? [:]
         let items = Array(todoDictionary.values)
-        return items.map({TodoItem(deadline: $0["deadline"] as! NSDate, title: $0["title"] as! String, UUID: $0["UUID"] as! String!)}).sorted({(left: TodoItem, right:TodoItem) -> Bool in
+        return items.map({TodoItem(deadline: $0["deadline"] as! NSDate, title: $0["title"] as! String, UUID: $0["UUID"] as! String!)}).sort({(left: TodoItem, right:TodoItem) -> Bool in
             (left.deadline.compare(right.deadline) == .OrderedAscending)
         })
     }
@@ -34,7 +34,7 @@ class TodoList {
         NSUserDefaults.standardUserDefaults().setObject(todoDictionary, forKey: ITEMS_KEY) // save/overwrite todo item list
         
         // create a corresponding local notification
-        var notification = UILocalNotification()
+        let notification = UILocalNotification()
         notification.alertBody = "Todo Item \"\(item.title)\" Is Overdue" // text that will be displayed in the notification
         notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
         notification.fireDate = item.deadline // todo item due date (when notification will be fired)
@@ -45,7 +45,10 @@ class TodoList {
     }
     
     func removeItem(item: TodoItem) {
-        for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
+        let scheduledNotifications: [UILocalNotification]? = UIApplication.sharedApplication().scheduledLocalNotifications
+        guard scheduledNotifications != nil else {return} // Nothing to remove, so return
+
+        for notification in scheduledNotifications! { // loop through notifications...
             if (notification.userInfo!["UUID"] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
                 UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
                 break
