@@ -33,19 +33,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         todoCategory.setActions([remindAction, completeAction], forContext: .Default) // UIUserNotificationActionContext.Default (4 actions max)
         todoCategory.setActions([completeAction, remindAction], forContext: .Minimal) // UIUserNotificationActionContext.Minimal - for when space is limited (2 actions max)
         
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: NSSet(array: [todoCategory]) as Set<NSObject>)) // we're now providing a set containing our category as an argument
+        // we're now providing a set containing our category as an argument
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: Set([todoCategory])))
         return true
     }
     
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        var item = TodoItem(deadline: notification.fireDate!, title: notification.userInfo!["title"] as! String, UUID: notification.userInfo!["UUID"] as! String!)
+        let item = TodoItem(deadline: notification.fireDate!, title: notification.userInfo!["title"] as! String, UUID: notification.userInfo!["UUID"] as! String!)
         switch (identifier!) {
         case "COMPLETE_TODO":
             TodoList.sharedInstance.removeItem(item)
         case "REMIND":
             TodoList.sharedInstance.scheduleReminderforItem(item)
         default: // switch statements must be exhaustive - this condition should never be met
-            println("Error: unexpected notification action identifier!")
+            print("Error: unexpected notification action identifier!")
         }
         completionHandler() // per developer documentation, app will terminate if we fail to call this
     }
@@ -59,8 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillResignActive(application: UIApplication) { // fired when user quits the application
-        var todoItems: [TodoItem] = TodoList.sharedInstance.allItems() // retrieve list of all to-do items
-        var overdueItems = todoItems.filter({ (todoItem) -> Bool in
+        let todoItems: [TodoItem] = TodoList.sharedInstance.allItems() // retrieve list of all to-do items
+        let overdueItems = todoItems.filter({ (todoItem) -> Bool in
             return todoItem.deadline.compare(NSDate()) != .OrderedDescending
         })
         UIApplication.sharedApplication().applicationIconBadgeNumber = overdueItems.count  // set our badge number to number of overdue items

@@ -20,9 +20,9 @@ class TodoList {
     private let ITEMS_KEY = "todoItems"
     
     func allItems() -> [TodoItem] {
-        var todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? [:]
+        let todoDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(ITEMS_KEY) ?? [:]
         let items = Array(todoDictionary.values)
-        return items.map({TodoItem(deadline: $0["deadline"] as! NSDate, title: $0["title"] as! String, UUID: $0["UUID"] as! String!)}).sorted({(left: TodoItem, right:TodoItem) -> Bool in
+        return items.map({TodoItem(deadline: $0["deadline"] as! NSDate, title: $0["title"] as! String, UUID: $0["UUID"] as! String!)}).sort({(left: TodoItem, right:TodoItem) -> Bool in
             (left.deadline.compare(right.deadline) == .OrderedAscending)
         })
     }
@@ -34,7 +34,7 @@ class TodoList {
         NSUserDefaults.standardUserDefaults().setObject(todoDictionary, forKey: ITEMS_KEY) // save/overwrite todo item list
         
         // create a corresponding local notification
-        var notification = UILocalNotification()
+        let notification = UILocalNotification()
         notification.alertBody = "Todo Item \"\(item.title)\" Is Overdue" // text that will be displayed in the notification
         notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
         notification.fireDate = item.deadline // todo item due date (when notification will be fired)
@@ -48,7 +48,10 @@ class TodoList {
     }
     
     func removeItem(item: TodoItem) {
-        for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
+        let scheduledNotifications: [UILocalNotification]? = UIApplication.sharedApplication().scheduledLocalNotifications
+        guard scheduledNotifications != nil else {return} // Nothing to remove, so return
+
+        for notification in scheduledNotifications! { // loop through notifications...
             if (notification.userInfo!["UUID"] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
                 UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
                 break
@@ -64,7 +67,7 @@ class TodoList {
     }
     
     func scheduleReminderforItem(item: TodoItem) {
-        var notification = UILocalNotification() // create a new reminder notification
+        let notification = UILocalNotification() // create a new reminder notification
         notification.alertBody = "Reminder: Todo Item \"\(item.title)\" Is Overdue" // text that will be displayed in the notification
         notification.alertAction = "open" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
         notification.fireDate = NSDate().dateByAddingTimeInterval(30 * 60) // 30 minutes from current time
@@ -76,11 +79,13 @@ class TodoList {
     }
     
     func setBadgeNumbers() {
-        var notifications = UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] // all scheduled notifications
-        var todoItems: [TodoItem] = self.allItems()
+        let scheduledNotifications: [UILocalNotification]? = UIApplication.sharedApplication().scheduledLocalNotifications // all scheduled notifications
+        guard scheduledNotifications != nil else {return} // Nothing to remove, so return
         
-        for notification in notifications {
-            var overdueItems = todoItems.filter({ (todoItem) -> Bool in // array of to-do items...
+        let todoItems: [TodoItem] = self.allItems()
+        
+        for notification in scheduledNotifications! {
+            let overdueItems = todoItems.filter({ (todoItem) -> Bool in // array of to-do items...
                 return (todoItem.deadline.compare(notification.fireDate!) != .OrderedDescending) // ...where item deadline is before or on notification fire date
             })
         
