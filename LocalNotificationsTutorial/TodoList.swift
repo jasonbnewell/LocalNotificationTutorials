@@ -80,38 +80,31 @@ class TodoList {
     
     func setBadgeNumbers() {
         let scheduledNotifications: [UILocalNotification]? = UIApplication.sharedApplication().scheduledLocalNotifications // all scheduled notifications
-        guard scheduledNotifications != nil else {return} // Nothing to remove, so return        
+        guard scheduledNotifications != nil else {return} // nothing to remove, so return
         
         let todoItems: [TodoItem] = self.allItems()
         
-        // We'll schedule replacement notifications with an updated badge number
-        var replacementNotifications: [UILocalNotification] = []
+        // we can't modify scheduled notifications, so we'll loop through the scheduled notifications and
+        //
+        var notifications: [UILocalNotification] = []
 
         for notification in scheduledNotifications! {
+            print(UIApplication.sharedApplication().scheduledLocalNotifications!.count)
             let overdueItems = todoItems.filter({ (todoItem) -> Bool in // array of to-do items...
-                return (todoItem.deadline.compare(notification.fireDate!) != .OrderedDescending) // ...where item deadline is before or on notification fire date
+                // ...in which item deadline is on or before notification fire date
+                return (todoItem.deadline.compare(notification.fireDate!) != .OrderedDescending)
             })
         
-            // ceate a replacement of the notification to "reschedule" it.
-            let replacement = UILocalNotification()
-            replacement.alertBody = notification.alertBody
-            replacement.fireDate = notification.fireDate
-            replacement.userInfo = notification.userInfo
-            replacement.soundName = UILocalNotificationDefaultSoundName
-            replacement.alertAction = "open"
-            replacement.category = "TODO_CATEGORY"
-            
             // set new badge number
-            replacement.applicationIconBadgeNumber = overdueItems.count
-            
-            replacementNotifications.append(replacement)
+            notification.applicationIconBadgeNumber = overdueItems.count            
+            notifications.append(notification)
         }
         
         // don't modify a collection while you're iterating through it
-        UIApplication.sharedApplication().cancelAllLocalNotifications() // cancel original notifications
+        UIApplication.sharedApplication().cancelAllLocalNotifications() // cancel all notifications
         
-        for replacement in replacementNotifications {
-            UIApplication.sharedApplication().scheduleLocalNotification(replacement) // reschedule notification
+        for note in notifications {
+            UIApplication.sharedApplication().scheduleLocalNotification(note) // reschedule the new versions
         }
     }
 }
