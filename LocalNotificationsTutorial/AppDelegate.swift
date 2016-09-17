@@ -10,61 +10,60 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
 
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         let completeAction = UIMutableUserNotificationAction()
         completeAction.identifier = "COMPLETE_TODO" // the unique identifier for this action
         completeAction.title = "Complete" // title for the action button
-        completeAction.activationMode = .Background // UIUserNotificationActivationMode.Background - don't bring app to foreground
-        completeAction.authenticationRequired = false // don't require unlocking before performing action
-        completeAction.destructive = true // display action in red
+        completeAction.activationMode = .background // UIUserNotificationActivationMode.Background - don't bring app to foreground
+        completeAction.isAuthenticationRequired = false // don't require unlocking before performing action
+        completeAction.isDestructive = true // display action in red
         
         let remindAction = UIMutableUserNotificationAction()
         remindAction.identifier = "REMIND"
         remindAction.title = "Remind in 30 minutes"
-        remindAction.activationMode = .Background
-        remindAction.destructive = false
+        remindAction.activationMode = .background
+        remindAction.isDestructive = false
         
         let todoCategory = UIMutableUserNotificationCategory() // notification categories allow us to create groups of actions that we can associate with a notification
         todoCategory.identifier = "TODO_CATEGORY"
-        todoCategory.setActions([remindAction, completeAction], forContext: .Default) // UIUserNotificationActionContext.Default (4 actions max)
-        todoCategory.setActions([completeAction, remindAction], forContext: .Minimal) // UIUserNotificationActionContext.Minimal - for when space is limited (2 actions max)
-        
+        todoCategory.setActions([remindAction, completeAction], for: .default) // UIUserNotificationActionContext.Default (4 actions max)
+        todoCategory.setActions([completeAction, remindAction], for: .minimal) // UIUserNotificationActionContext.Minimal - for when space is limited (2 actions max)
+
         // we're now providing a set containing our category as an argument
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: Set([todoCategory])))
+        application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: Set([todoCategory])))
         return true
     }
-    
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+
+	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Void) {
+
         let item = TodoItem(deadline: notification.fireDate!, title: notification.userInfo!["title"] as! String, UUID: notification.userInfo!["UUID"] as! String!)
         switch (identifier!) {
         case "COMPLETE_TODO":
-            TodoList.sharedInstance.removeItem(item)
+            TodoList.sharedInstance.remove(item)
         case "REMIND":
-            TodoList.sharedInstance.scheduleReminderforItem(item)
+            TodoList.sharedInstance.scheduleReminder(forItem: item)
         default: // switch statements must be exhaustive - this condition should never be met
             print("Error: unexpected notification action identifier!")
         }
         completionHandler() // per developer documentation, app will terminate if we fail to call this
     }
     
-    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName("TodoListShouldRefresh", object: self)
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+        NotificationCenter.default().post(name: "TodoListShouldRefresh" as NSNotification.Name, object: self)
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
-        NSNotificationCenter.defaultCenter().postNotificationName("TodoListShouldRefresh", object: self)
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        NotificationCenter.default().post(name: "TodoListShouldRefresh" as NSNotification.Name, object: self)
     }
 
-    func applicationWillResignActive(application: UIApplication) { // fired when user quits the application
+    func applicationWillResignActive(_ application: UIApplication) { // fired when user quits the application
         let todoItems: [TodoItem] = TodoList.sharedInstance.allItems() // retrieve list of all to-do items
         let overdueItems = todoItems.filter({ (todoItem) -> Bool in
-            return todoItem.deadline.compare(NSDate()) != .OrderedDescending
+            return todoItem.deadline.compare(Date()) != .orderedDescending
         })
-        UIApplication.sharedApplication().applicationIconBadgeNumber = overdueItems.count  // set our badge number to number of overdue items
+        UIApplication.shared().applicationIconBadgeNumber = overdueItems.count  // set our badge number to number of overdue items
     }
 
 }
