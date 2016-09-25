@@ -22,7 +22,10 @@ class TodoList {
     func allItems() -> [TodoItem] {
         let todoDictionary = UserDefaults.standard.dictionary(forKey: ITEMS_KEY) ?? [:]
         let items = Array(todoDictionary.values)
-        return items.map({TodoItem(deadline: $0["deadline"] as! Date, title: $0["title"] as! String, UUID: $0["UUID"] as! String!)}).sorted(by: {(left: TodoItem, right:TodoItem) -> Bool in
+        return items.map({
+			let item = $0 as! [String:AnyObject]
+			return TodoItem(deadline: item["deadline"] as! Date, title: item["title"] as! String, UUID: item["UUID"] as! String!)
+		}).sorted(by: {(left: TodoItem, right:TodoItem) -> Bool in
             (left.deadline.compare(right.deadline) == .orderedAscending)
         })
     }
