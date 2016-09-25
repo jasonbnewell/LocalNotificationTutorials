@@ -14,21 +14,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // types are UIUserNotificationType properties
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil))
+        application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))
         return true
     }
     
-    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName("TodoListShouldRefresh", object: self)
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "TodoListShouldRefresh"), object: self)
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
-        NSNotificationCenter.defaultCenter().postNotificationName("TodoListShouldRefresh", object: self)
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "TodoListShouldRefresh"), object: self)
     }
 
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
