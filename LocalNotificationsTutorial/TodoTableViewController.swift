@@ -13,7 +13,7 @@ class TodoTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default().addObserver(self, selector: #selector(TodoTableViewController.refreshList), name: "TodoListShouldRefresh", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TodoTableViewController.refreshList), name: NSNotification.Name(rawValue: "TodoListShouldRefresh"), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,9 +44,9 @@ class TodoTableViewController: UITableViewController {
         
         cell.textLabel?.text = todoItem.title as String!
         if (todoItem.isOverdue) { // the current time is later than the to-do item's deadline
-            cell.detailTextLabel?.textColor = UIColor.red()
+            cell.detailTextLabel?.textColor = UIColor.red
         } else {
-            cell.detailTextLabel?.textColor = UIColor.black() // we need to reset this because a cell with red subtitle may be returned by dequeueReusableCellWithIdentifier:indexPath:
+            cell.detailTextLabel?.textColor = UIColor.black // we need to reset this because a cell with red subtitle may be returned by dequeueReusableCellWithIdentifier:indexPath:
         }
         
         let dateFormatter = DateFormatter()

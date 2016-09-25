@@ -12,7 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         let completeAction = UIMutableUserNotificationAction()
         completeAction.identifier = "COMPLETE_TODO" // the unique identifier for this action
         completeAction.title = "Complete" // title for the action button
@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Void) {
+	func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: @escaping () -> Void) {
 
         let item = TodoItem(deadline: notification.fireDate!, title: notification.userInfo!["title"] as! String, UUID: notification.userInfo!["UUID"] as! String!)
         switch (identifier!) {
@@ -51,11 +51,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        NotificationCenter.default().post(name: "TodoListShouldRefresh" as NSNotification.Name, object: self)
+		// It's generally better to define one static variable instead of inlining the Notificaiton.Name constructor.
+        NotificationCenter.default.post(name: Notification.Name("TodoListShouldRefresh"), object: self)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        NotificationCenter.default().post(name: "TodoListShouldRefresh" as NSNotification.Name, object: self)
+        NotificationCenter.default.post(name: Notification.Name("TodoListShouldRefresh") as NSNotification.Name, object: self)
     }
 
     func applicationWillResignActive(_ application: UIApplication) { // fired when user quits the application
@@ -63,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let overdueItems = todoItems.filter({ (todoItem) -> Bool in
             return todoItem.deadline.compare(Date()) != .orderedDescending
         })
-        UIApplication.shared().applicationIconBadgeNumber = overdueItems.count  // set our badge number to number of overdue items
+        UIApplication.shared.applicationIconBadgeNumber = overdueItems.count  // set our badge number to number of overdue items
     }
 
 }

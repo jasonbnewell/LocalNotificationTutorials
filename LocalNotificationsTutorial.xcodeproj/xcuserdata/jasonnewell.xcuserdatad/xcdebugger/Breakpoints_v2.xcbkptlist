@@ -16,7 +16,7 @@
             startingLineNumber = "11"
             endingLineNumber = "11"
             landmarkName = "TodoItem"
-            landmarkType = "3">
+            landmarkType = "14">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -69,17 +69,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LocalNotificationsTutorial/AppDelegate.swift"
-            timestampString = "493084309.311762"
+            timestampString = "496471527.160157"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
             landmarkName = "application(_:handleActionWithIdentifier:for:completionHandler:)"
-            landmarkType = "5">
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

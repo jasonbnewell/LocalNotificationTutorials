@@ -20,11 +20,12 @@ class TodoList {
     private let ITEMS_KEY = "todoItems"
     
     func allItems() -> [TodoItem] {
-        let todoDictionary = UserDefaults.standard().dictionary(forKey: ITEMS_KEY) ?? [:]
+        let todoDictionary = UserDefaults.standard.dictionary(forKey: ITEMS_KEY) ?? [:]
 
         let items = Array(todoDictionary.values)
 		return items.map({
-			TodoItem(deadline: $0["deadline"] as! Date, title: $0["title"] as! String, UUID: $0["UUID"] as! String!)
+			let item = $0 as! [String:AnyObject]
+			return TodoItem(deadline: item["deadline"] as! Date, title: item["title"] as! String, UUID: item["UUID"] as! String!)
 		}).sorted { (left, right) -> Bool in
 			return left.deadline.compare(right.deadline) == .orderedAscending
 		}
@@ -32,9 +33,9 @@ class TodoList {
 
     func add(_ item: TodoItem) {
         // persist a representation of this todo item in NSUserDefaults
-        var todoDictionary = UserDefaults.standard().dictionary(forKey: ITEMS_KEY) ?? Dictionary() // if todoItems hasn't been set in user defaults, initialize todoDictionary to an empty dictionary using nil-coalescing operator (??)
+        var todoDictionary = UserDefaults.standard.dictionary(forKey: ITEMS_KEY) ?? Dictionary() // if todoItems hasn't been set in user defaults, initialize todoDictionary to an empty dictionary using nil-coalescing operator (??)
         todoDictionary[item.UUID] = ["deadline": item.deadline, "title": item.title, "UUID": item.UUID] // store NSData representation of todo item in dictionary with UUID as key
-        UserDefaults.standard().set(todoDictionary, forKey: ITEMS_KEY) // save/overwrite todo item list
+        UserDefaults.standard.set(todoDictionary, forKey: ITEMS_KEY) // save/overwrite todo item list
         
         // create a corresponding local notification
         let notification = UILocalNotification()
@@ -45,25 +46,25 @@ class TodoList {
         notification.userInfo = ["title": item.title, "UUID": item.UUID] // assign a unique identifier to the notification so that we can retrieve it later
         notification.category = "TODO_CATEGORY"
         
-        UIApplication.shared().scheduleLocalNotification(notification)
+        UIApplication.shared.scheduleLocalNotification(notification)
         
         self.setBadgeNumbers()
     }
     
     func remove(_ item: TodoItem) {
-        let scheduledNotifications: [UILocalNotification]? = UIApplication.shared().scheduledLocalNotifications
+        let scheduledNotifications: [UILocalNotification]? = UIApplication.shared.scheduledLocalNotifications
         guard scheduledNotifications != nil else {return} // Nothing to remove, so return
 
         for notification in scheduledNotifications! { // loop through notifications...
             if (notification.userInfo!["UUID"] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
-                UIApplication.shared().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+                UIApplication.shared.cancelLocalNotification(notification) // there should be a maximum of one match on UUID
                 break
             }
         }
         
-        if var todoItems = UserDefaults.standard().dictionary(forKey: ITEMS_KEY) {
+        if var todoItems = UserDefaults.standard.dictionary(forKey: ITEMS_KEY) {
             todoItems.removeValue(forKey: item.UUID)
-            UserDefaults.standard().set(todoItems, forKey: ITEMS_KEY) // save/overwrite todo item list
+            UserDefaults.standard.set(todoItems, forKey: ITEMS_KEY) // save/overwrite todo item list
         }
         
         self.setBadgeNumbers()
@@ -78,11 +79,11 @@ class TodoList {
         notification.userInfo = ["title": item.title, "UUID": item.UUID] // assign a unique identifier to the notification that we can use to retrieve it later
         notification.category = "TODO_CATEGORY"
         
-        UIApplication.shared().scheduleLocalNotification(notification)
+        UIApplication.shared.scheduleLocalNotification(notification)
     }
     
     func setBadgeNumbers() {
-        let scheduledNotifications: [UILocalNotification]? = UIApplication.shared().scheduledLocalNotifications // all scheduled notifications
+        let scheduledNotifications: [UILocalNotification]? = UIApplication.shared.scheduledLocalNotifications // all scheduled notifications
         guard scheduledNotifications != nil else {return} // nothing to remove, so return
         
         let todoItems: [TodoItem] = self.allItems()
@@ -92,7 +93,7 @@ class TodoList {
         var notifications: [UILocalNotification] = []
 
         for notification in scheduledNotifications! {
-            print(UIApplication.shared().scheduledLocalNotifications!.count)
+            print(UIApplication.shared.scheduledLocalNotifications!.count)
             let overdueItems = todoItems.filter({ (todoItem) -> Bool in // array of to-do items...
                 // ...in which item deadline is on or before notification fire date
                 return (todoItem.deadline.compare(notification.fireDate!) != .orderedDescending)
@@ -104,10 +105,10 @@ class TodoList {
         }
         
         // don't modify a collection while you're iterating through it
-        UIApplication.shared().cancelAllLocalNotifications() // cancel all notifications
+        UIApplication.shared.cancelAllLocalNotifications() // cancel all notifications
         
         for note in notifications {
-            UIApplication.shared().scheduleLocalNotification(note) // reschedule the new versions
+            UIApplication.shared.scheduleLocalNotification(note) // reschedule the new versions
         }
     }
 }
