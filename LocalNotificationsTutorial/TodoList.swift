@@ -89,7 +89,7 @@ class TodoList {
         let todoItems: [TodoItem] = self.allItems()
         
         // we can't modify scheduled notifications, so we'll loop through the scheduled notifications and
-        //
+        // unschedule/reschedule items which need to be updated.
         var notifications: [UILocalNotification] = []
 
         for notification in scheduledNotifications! {
