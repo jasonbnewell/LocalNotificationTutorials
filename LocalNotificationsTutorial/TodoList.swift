@@ -12,7 +12,7 @@ import UIKit
 class TodoList {
     class var sharedInstance : TodoList {
         struct Static {
-            static let instance : TodoList = TodoList()
+            static let instance: TodoList = TodoList()
         }
         return Static.instance
     }
